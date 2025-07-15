@@ -323,10 +323,10 @@ const Player = ({ urlParams, queryParams }) => {
         setError(null);
         video.unload();
 
-        if (player.selected && streamingServer.settings?.type !== 'Loading') {
+        if (player.stream?.type === 'Ready' && streamingServer.settings?.type !== 'Loading') {
             video.load({
                 stream: {
-                    ...player.selected.stream,
+                    ...player.stream.content,
                     subtitles: Array.isArray(player.selected.stream.subtitles) ?
                         player.selected.stream.subtitles.map((subtitles) => ({
                             ...subtitles,
