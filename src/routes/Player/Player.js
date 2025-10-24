@@ -185,22 +185,30 @@ const Player = ({ urlParams, queryParams }) => {
         settings.subtitlesOutlineColor,
     ]);
 
-    // const handleNextVideoNavigation = React.useCallback((deepLinks, bingeWatching, ended) => {
-    //     if (bingeWatching && !ended) {
-    //         if (deepLinks.player) {
-    //             isNavigating.current = true;
-    //             window.location.replace(deepLinks.player);
-    //         } else if (deepLinks.metaDetailsStreams) {
-    //             isNavigating.current = true;
-    //             window.location.replace(deepLinks.metaDetailsStreams);
-    //         }
-    //     } else {
-    //         if (!ended && deepLinks.metaDetailsStreams) {
-    //             isNavigating.current = true;
-    //             window.location.replace(deepLinks.metaDetailsStreams);
-    //         }
-    //     }
-    // }, []);
+    const handleNextVideoNavigation = React.useCallback(
+        (deepLinks, bingeWatching, ended) => {
+            if (ended) {
+                if (profile.settings.bingeWatching) {
+                    if (deepLinks.player) {
+                        isNavigating.current = true;
+                        window.location.replace(deepLinks.player);
+                    } else if (deepLinks.metaDetailsStreams) {
+                        isNavigating.current = true;
+                        window.location.replace(deepLinks.metaDetailsStreams);
+                    }
+                }
+            } else {
+                if (deepLinks.player) {
+                    isNavigating.current = true;
+                    window.location.replace(deepLinks.player);
+                } else if (deepLinks.metaDetailsStreams) {
+                    isNavigating.current = true;
+                    window.location.replace(deepLinks.metaDetailsStreams);
+                }
+            }
+        },
+        []
+    );
 
     const onEnded = React.useCallback(() => {
         // here we need to explicitly check for isNavigating.current
@@ -214,16 +222,11 @@ const Player = ({ urlParams, queryParams }) => {
             nextVideo();
 
             const deepLinks = window.playerNextVideo.deepLinks;
-            // handleNextVideoNavigation(deepLinks, profile.settings.bingeWatching, true);
-            if (profile.settings.bingeWatching) {
-                if (deepLinks.player) {
-                    isNavigating.current = true;
-                    window.location.replace(deepLinks.player);
-                } else if (deepLinks.metaDetailsStreams) {
-                    isNavigating.current = true;
-                    window.location.replace(deepLinks.metaDetailsStreams);
-                }
-            }
+            handleNextVideoNavigation(
+                deepLinks,
+                profile.settings.bingeWatching,
+                true
+            );
         } else {
             window.history.back();
         }
@@ -383,17 +386,13 @@ const Player = ({ urlParams, queryParams }) => {
             nextVideo();
 
             const deepLinks = player.nextVideo.deepLinks;
-            if (deepLinks.player) {
-                isNavigating.current = true;
-                window.location.replace(deepLinks.player);
-            } else if (deepLinks.metaDetailsStreams) {
-                isNavigating.current = true;
-                window.location.replace(deepLinks.metaDetailsStreams);
-            }
-            // handleNextVideoNavigation(deepLinks, profile.settings.bingeWatching, false);
+            handleNextVideoNavigation(
+                deepLinks,
+                profile.settings.bingeWatching,
+                false
+            );
         }
-        // }, [player.nextVideo, handleNextVideoNavigation]);
-    }, [player.nextVideo, profile.settings]);
+    }, [player.nextVideo, handleNextVideoNavigation, profile.settings]);
 
     const onVideoClick = React.useCallback(() => {
         if (video.state.paused !== null) {
