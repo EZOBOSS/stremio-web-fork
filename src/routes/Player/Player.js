@@ -188,7 +188,7 @@ const Player = ({ urlParams, queryParams }) => {
     const handleNextVideoNavigation = React.useCallback(
         (deepLinks, bingeWatching, ended) => {
             if (ended) {
-                if (bingeWatching) {
+                if (profile.settings.bingeWatching) {
                     if (deepLinks.player) {
                         isNavigating.current = true;
                         window.location.replace(deepLinks.player);
@@ -196,8 +196,6 @@ const Player = ({ urlParams, queryParams }) => {
                         isNavigating.current = true;
                         window.location.replace(deepLinks.metaDetailsStreams);
                     }
-                } else {
-                    window.history.back();
                 }
             } else {
                 if (deepLinks.player) {
@@ -388,6 +386,7 @@ const Player = ({ urlParams, queryParams }) => {
             nextVideo();
 
             const deepLinks = player.nextVideo.deepLinks;
+
             handleNextVideoNavigation(
                 deepLinks,
                 profile.settings.bingeWatching,
