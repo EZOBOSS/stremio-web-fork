@@ -582,11 +582,7 @@ const Player = ({ urlParams, queryParams }) => {
     }, [video.state.videoParams]);
 
     React.useEffect(() => {
-        if (
-            !!settings.bingeWatching &&
-            player.nextVideo !== null &&
-            !nextVideoPopupDismissed.current
-        ) {
+        if (player.nextVideo !== null && !nextVideoPopupDismissed.current) {
             if (
                 video.state.time !== null &&
                 video.state.duration !== null &&
