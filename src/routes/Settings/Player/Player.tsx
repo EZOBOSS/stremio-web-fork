@@ -111,7 +111,6 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                 <Option label={'SETTINGS_NEXT_VIDEO_POPUP_DURATION'}>
                     <MultiselectMenu
                         className={'multiselect'}
-                        disabled={!profile.settings.bingeWatching}
                         {...nextVideoPopupDurationSelect}
                     />
                 </Option>
