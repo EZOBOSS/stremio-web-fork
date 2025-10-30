@@ -172,6 +172,20 @@
         }
     }
 
+    &.selected {
+        animation: border 3s ease-in-out forwards;
+    }
+
+    @keyframes border {
+        0% {
+            border: 2px solid var(--primary-accent-color);
+        }
+        100% {
+            border: 2px solid transparent;
+        }
+    }
+
+
     .context-menu-container {
         max-width: calc(90% - 1.5rem);
         z-index: 2;

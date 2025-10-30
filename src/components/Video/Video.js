@@ -73,15 +73,19 @@ const Video = ({ className, id, title, thumbnail, season, episode, released, upc
         const blurThumbnail = profile.settings.hideSpoilers && season && episode && !watched;
 
         React.useEffect(() => {
-            selected && !watched && ref.current?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-                inline: 'start'
-            });
+            if (selected && ref.current) {
+                if ((progress && watched) || !watched) {
+                    ref.current.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'start'
+                    });
+                }
+            }
         }, [selected]);
 
         return (
-            <Button {...props} ref={ref} className={classnames(className, styles['video-container'])} title={title}>
+            <Button {...props} ref={ref} className={classnames(className, styles['video-container'], { [styles['selected']]: selected })} title={title}>
                 {
                     typeof thumbnail === 'string' && thumbnail.length > 0 ?
                         <div className={styles['thumbnail-container']}>
