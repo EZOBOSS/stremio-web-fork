@@ -20,6 +20,10 @@
     margin-bottom: 0.5rem;
     border-radius: var(--border-radius);
 
+    @supports (scroll-margin: 1.25rem) {
+        scroll-margin: 1.25rem;
+    }
+
     &:hover,
     &:focus,
     &:global(.active) {
@@ -178,10 +182,10 @@
 
     @keyframes border {
         0% {
-            border: 2px solid var(--primary-accent-color);
+            border: 0.15rem solid var(--primary-accent-color);
         }
         100% {
-            border: 2px solid transparent;
+            border: 0.15rem solid transparent;
         }
     }
 
