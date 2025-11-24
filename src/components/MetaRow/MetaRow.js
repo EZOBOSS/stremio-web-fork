@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import useTranslate from "stremio/common/useTranslate";
 import { Button } from "stremio/components";
+import { useHero } from "stremio/components/Hero/HeroContext";
 import MetaRowPlaceholder from "./MetaRowPlaceholder";
 import ScrollIndicator from "./ScrollIndicator";
 import styles from "./styles";
@@ -24,6 +25,7 @@ const MetaRow = ({
     catalogId,
 }) => {
     const t = useTranslate();
+    const { activeItem } = useHero();
     const containerRef = useRef(null);
 
     const catalogTitle = useMemo(
@@ -121,10 +123,13 @@ const MetaRow = ({
     }, [enableInfiniteScroll, isLoading, hasMore, loadMore]);
 
     const showMessage = typeof message === "string" && message.length > 0;
+    const isTrailerPlaying = activeItem && activeItem.trailerVideoId;
 
     return (
         <div className={classNames(className, styles["meta-row-container"])}>
-            <div className={styles["header-container"]}>
+            <div className={classNames(styles["header-container"], {
+                "dim": isTrailerPlaying
+            })}>
                 {catalogTitle && (
                     <div
                         className={styles["title-container"]}

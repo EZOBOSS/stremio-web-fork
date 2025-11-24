@@ -15,7 +15,11 @@ export const HeroProvider = ({ children }) => {
 export const useHero = () => {
     const context = useContext(HeroContext);
     if (!context) {
-        throw new Error("useHero must be used within a HeroProvider");
+        // Return safe defaults when used outside HeroProvider
+        return {
+            activeItem: null,
+            setActiveItem: () => {}, // noop
+        };
     }
     return context;
 };

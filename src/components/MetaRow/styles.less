@@ -14,10 +14,10 @@
     //opacity: 0;
     //pointer-events: none;
     //transform: translateY(-20px) scale(0.5);
-   
+
 
     .header-container {
-        position:absolute;
+        position: absolute;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -25,40 +25,122 @@
         padding: 0 1rem;
         margin-bottom: 0.25rem;
         top: -45px;
-        
+        background: transparent !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        border: none !important;
+        padding: 0 1.5rem !important;
+        margin-bottom: 1rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        position: absolute !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 2 !important;
+        pointer-events: none !important;
+        opacity: 1;
+        transition: opacity 400ms ease-out, transform 400ms ease-out;
+
+        &:global(.dim) {
+            opacity: 0.2 !important;
+            transform: translateY(10px) !important;
+
+        }
+
 
         .title-container {
             flex: 1;
             max-height: 2.4em;
             font-size: 1.6rem;
             font-weight: 500;
-            color: var(--primary-foreground-color);
+            color: whitesmoke !important;
+            font-size: 1.2rem !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+            letter-spacing: 0.5px !important;
+
+            /* Glass Effect moved here */
+            background: rgba(70, 70, 70, 0.22) !important;
+            border-radius: 999px !important;
+            /* Pill shape for title too? Or 12px */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
+            backdrop-filter: blur(10px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.04) !important;
+            padding: 0.5rem 1.5rem !important;
+            width: fit-content !important;
+            /* Don't stretch */
+            pointer-events: auto !important;
+            /* Re-enable clicks */
+            flex-grow: 0 !important;
+            /* Prevent growing */
+            flex-basis: auto !important;
+            /* Only take necessary space */
+            margin-right: auto !important;
+            /* Push everything else to the right, just in case */
         }
 
+
+
         .see-all-container {
-            flex: none;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            max-width: 12rem;
-            height: 2.5rem;
-            padding: 0 0.5rem 0 1rem;
-            border-radius: 2.5rem;
-            opacity: 0.6;
+            background: rgba(70, 70, 70, 0.22) !important;
+            border-radius: 999px !important;
+            padding: 6px 8px !important;
+            /* Reduced padding for icon only state */
+            transition: all 0.3s ease !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 600 !important;
+            font-size: 0.85rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            backdrop-filter: blur(10px) saturate(180%) !important;
+            pointer-events: auto !important;
+            width: fit-content !important;
+            gap: 0 !important;
+
+            /* Ensure no gap between collapsed label and icon */
+
 
             &:hover,
             &:focus {
                 outline: none;
                 background-color: var(--overlay-color);
                 opacity: 1;
+                background: rgba(255, 255, 255, 0.2) !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+                border-color: rgba(255, 255, 255, 0.3) !important;
+                color: #fff !important;
+                padding: 6px 16px !important;
             }
 
             .label {
-                flex: 0 1 auto;
-                max-height: 1.2em;
-                font-size: 1rem;
-                font-weight: 500;
-                color: var(--primary-foreground-color);
+                width: auto;
+                max-width: 0;
+                opacity: 0;
+                overflow: hidden;
+                white-space: nowrap;
+                transition: all 0.3s ease;
+                margin: 0;
+                padding: 0;
+                /* Ensure no padding takes up space */
+                border: none;
+            }
+
+            &:hover .label,
+            &:focus .label {
+                opacity: 1;
+                max-width: 100px;
+                transition: all 0.3s ease;
+                margin-right: 8px;
             }
 
             .icon {
@@ -66,6 +148,13 @@
                 height: 1.5rem;
                 margin-left: 0.5rem;
                 color: var(--primary-foreground-color);
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-size: 1.2rem !important;
+                /* Adjust icon size */
+                margin: 0 !important;
+                /* Ensure no margin on icon */
             }
         }
     }
@@ -89,6 +178,7 @@
         margin-left: 2rem !important;
         height: 18rem !important;
         scrollbar-width: none;
+
         &::-webkit-scrollbar {
             display: none;
         }
@@ -169,13 +259,16 @@
 }
 
 @keyframes scroll-pulse {
-    0%, 100% { 
-        opacity: 0.7; 
-        transform: translateX(-50%) scale(1); 
+
+    0%,
+    100% {
+        opacity: 0.7;
+        transform: translateX(-50%) scale(1);
     }
-    50% { 
-        opacity: 1; 
-        transform: translateX(-50%) scale(1.05); 
+
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1.05);
     }
 }
 
@@ -183,6 +276,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }

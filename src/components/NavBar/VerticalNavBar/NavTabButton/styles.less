@@ -10,6 +10,21 @@
     justify-content: center;
     background-color: transparent;
     border-radius: 0.75rem;
+    align-items: center;
+    background-color: transparent;
+    display: flex;
+    flex-direction: row;
+    gap: 0px;
+    overflow-y: auto;
+    padding: 1rem 0;
+    scrollbar-width: none;
+    width: auto;
+    position: relative;
+    min-height: auto !important;
+    height: auto !important;
+    width: auto !important;
+    padding: 7px 10px !important;
+    transition: padding 0.2s ease-out !important;
 
     @media (pointer: fine) {
         &:hover {
@@ -17,6 +32,11 @@
 
             .label {
                 opacity: 0.6;
+                max-width: 150px !important;
+                width: auto !important;
+                opacity: 1 !important;
+                padding: 0 5px !important;
+                margin-left: 8px !important;
             }
 
             &:global(.selected) {
@@ -27,17 +47,50 @@
         }
     }
 
+    &:hover {
+        .icon {
+            opacity: 1 !important;
+        }
+    }
+
     &:global(.selected) {
+        background: rgba(70, 70, 70, 0.22) !important;
+        border-radius: 999px !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
+        backdrop-filter: blur(10px) saturate(2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.04) !important;
+        opacity: 1 !important;
+        transform: translateY(0px) scale(1) !important;
+
         .icon {
             opacity: 1;
         }
 
-        .icon, .label {
-            color: var(--primary-accent-color);
+        .icon,
+        .label {
+            color: whitesmoke;
+        }
+
+        .label {
+            max-width: 150px !important;
+            width: auto !important;
+            opacity: 1 !important;
+            padding: 0 5px !important;
+            margin-left: 8px !important;
         }
     }
 
-    .icon, .logo {
+    :global(:not(.selected)) &:hover {
+        background: rgba(90, 90, 90, 0.15) !important;
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+        border-radius: 999px !important;
+    }
+
+    .icon,
+    .logo {
         flex: none;
         width: 2.2rem;
         height: 2.2rem;
@@ -45,25 +98,33 @@
     }
 
     .icon {
-        color: var(--primary-foreground-color);
-        opacity: 0.35;
+        width: 20px !important;
+        height: 20px !important;
+        flex-shrink: 0 !important;
+        fill: currentColor !important;
+        /* Use text color */
+        display: block !important;
+        /* Ensure it's visible */
+        margin: 0 !important;
+        /* Remove any default margins */
+        align-self: center !important;
+        color: rgb(245, 245, 245) !important;
+        opacity: 0.2;
+        /* Explicitly center vertically */
     }
 
     .label {
-        flex: none;
-        position: relative;
-        max-width: 100%;
-        max-height: 2.4em;
-        padding: 0 0.5rem;
-        font-size: 0.8rem;
-        font-weight: 500;
-        letter-spacing: 0.01rem;
-        text-align: center;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        color: var(--primary-foreground-color);
-        opacity: 0;
-        overflow: hidden;
+        max-width: 0 !important;
+        width: 0 !important;
+        opacity: 0 !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+        transition: max-width 0.5s ease, opacity 0.5s ease, width 0.5s ease,
+            margin-left 0.5s ease, padding 0.5s ease !important;
+        padding: 0 !important;
+        /* Remove padding when hidden */
+        margin-left: 0 !important;
+        color: whitesmoke !important;
     }
 }
 

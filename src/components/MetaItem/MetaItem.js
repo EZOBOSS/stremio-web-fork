@@ -21,6 +21,9 @@ import { default as Button } from "stremio/components/Button";
 import { useHero } from "stremio/components/Hero/HeroContext";
 import { default as Image } from "stremio/components/Image";
 import Multiselect from "stremio/components/Multiselect";
+import { getDaysSinceRelease, isNewTag } from "./MetaItemHelpers";
+
+
 import styles from "./styles";
 
 const MetaItem = memo(
@@ -49,7 +52,8 @@ const MetaItem = memo(
         const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
         const { activeItem, setActiveItem } = useHero();
         const hoverTimeoutRef = useRef(null);
-
+        const newTag = isNewTag(props.released);
+       
         // Determine if this card should be dimmed
         const isActiveItem =
             activeItem &&
@@ -178,10 +182,13 @@ const MetaItem = memo(
                 }
             };
         }, []);
-
+       
+        
+      
         return (
             <Button
-                title={name}
+                //remove tooltip
+                //title={name} 
                 href={href}
                 {...filterInvalidDOMProps(props)}
                 className={classnames(
@@ -241,6 +248,18 @@ const MetaItem = memo(
                     {props.imdbRating ? (
                         <div className={styles["enhanced-rating"]}>
                             {props.imdbRating}
+                        </div>
+                    ) : null}
+                    {props.released ? (
+                        <div className={styles["enhanced-release-date"]}>
+                            {getDaysSinceRelease(
+                                props.released
+                            )}
+                        </div>
+                    ) : null}
+                    {newTag ? (
+                        <div className={styles["enhanced-new-tag"]}>
+                            {newTag}
                         </div>
                     ) : null}
                     {onPlayClick ? (

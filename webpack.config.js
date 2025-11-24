@@ -1,50 +1,47 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
-const path = require('path');
-const os = require('os');
-const { execSync } = require('child_process');
-const webpack = require('webpack');
-const threadLoader = require('thread-loader');
-const HtmlWebPackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const WebpackPwaManifest = require('webpack-pwa-manifest');
-const packageJson = require('./package.json');
+const path = require("path");
+const os = require("os");
+const { execSync } = require("child_process");
+const webpack = require("webpack");
+const threadLoader = require("thread-loader");
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const WorkboxPlugin = require("workbox-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const WebpackPwaManifest = require("webpack-pwa-manifest");
+const packageJson = require("./package.json");
 
-const COMMIT_HASH = execSync('git rev-parse HEAD').toString().trim();
+const COMMIT_HASH = execSync("git rev-parse HEAD").toString().trim();
 
 const THREAD_LOADER = {
-    loader: 'thread-loader',
+    loader: "thread-loader",
     options: {
-        name: 'shared-pool',
+        name: "shared-pool",
         workers: os.cpus().length,
     },
 };
 
-threadLoader.warmup(
-    THREAD_LOADER.options,
-    [
-        'babel-loader',
-        'ts-loader',
-        'css-loader',
-        'postcss-loader',
-        'less-loader',
-    ],
-);
+threadLoader.warmup(THREAD_LOADER.options, [
+    "babel-loader",
+    "ts-loader",
+    "css-loader",
+    "postcss-loader",
+    "less-loader",
+]);
 
 module.exports = (env, argv) => ({
     mode: argv.mode,
-    devtool: argv.mode === 'production' ? 'source-map' : 'eval-source-map',
+    devtool: argv.mode === "production" ? "source-map" : "eval-source-map",
     entry: {
-        main: './src/index.js',
-        worker: './node_modules/@stremio/stremio-core-web/worker.js'
+        main: "./src/index.js",
+        worker: "./node_modules/@stremio/stremio-core-web/worker.js",
     },
     output: {
-        path: path.join(__dirname, 'build'),
-        filename: `${COMMIT_HASH}/scripts/[name].js`
+        path: path.join(__dirname, "build"),
+        filename: `${COMMIT_HASH}/scripts/[name].js`,
     },
     module: {
         rules: [
@@ -54,15 +51,15 @@ module.exports = (env, argv) => ({
                 use: [
                     THREAD_LOADER,
                     {
-                        loader: 'babel-loader',
+                        loader: "babel-loader",
                         options: {
                             presets: [
-                                '@babel/preset-env',
-                                '@babel/preset-react'
+                                "@babel/preset-env",
+                                "@babel/preset-react",
                             ],
-                        }
-                    }
-                ]
+                        },
+                    },
+                ],
             },
             {
                 test: /\.(ts|tsx)$/,
@@ -70,12 +67,12 @@ module.exports = (env, argv) => ({
                 use: [
                     THREAD_LOADER,
                     {
-                        loader: 'ts-loader',
+                        loader: "ts-loader",
                         options: {
                             happyPackMode: true,
-                        }
-                    }
-                ]
+                        },
+                    },
+                ],
             },
             {
                 test: /\.less$/,
@@ -84,35 +81,35 @@ module.exports = (env, argv) => ({
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
-                            esModule: false
-                        }
+                            esModule: false,
+                        },
                     },
                     THREAD_LOADER,
                     {
-                        loader: 'css-loader',
+                        loader: "css-loader",
                         options: {
                             esModule: false,
                             importLoaders: 2,
                             modules: {
                                 namedExport: false,
-                                localIdentName: '[local]-[hash:base64:5]'
-                            }
-                        }
+                                localIdentName: "[local]-[hash:base64:5]",
+                            },
+                        },
                     },
                     {
-                        loader: 'postcss-loader',
+                        loader: "postcss-loader",
                         options: {
                             postcssOptions: {
                                 plugins: [
-                                    require('cssnano')({
+                                    require("cssnano")({
                                         preset: [
-                                            'advanced',
+                                            "advanced",
                                             {
                                                 autoprefixer: {
                                                     add: true,
                                                     remove: true,
                                                     flexbox: false,
-                                                    grid: false
+                                                    grid: false,
                                                 },
                                                 cssDeclarationSorter: true,
                                                 calc: false,
@@ -131,63 +128,63 @@ module.exports = (env, argv) => ({
                                                 normalizeUrl: false,
                                                 reduceIdents: false,
                                                 reduceInitial: false,
-                                                zindex: false
-                                            }
-                                        ]
-                                    })
-                                ]
-                            }
-                        }
+                                                zindex: false,
+                                            },
+                                        ],
+                                    }),
+                                ],
+                            },
+                        },
                     },
                     {
-                        loader: 'less-loader',
+                        loader: "less-loader",
                         options: {
                             lessOptions: {
                                 strictMath: true,
-                                ieCompat: false
-                            }
-                        }
-                    }
-                ]
+                                ieCompat: false,
+                            },
+                        },
+                    },
+                ],
             },
             {
                 test: /\.ttf$/,
                 exclude: /node_modules/,
-                type: 'asset/resource',
+                type: "asset/resource",
                 generator: {
-                    filename: `${COMMIT_HASH}/fonts/[name][ext][query]`
-                }
+                    filename: `${COMMIT_HASH}/fonts/[name][ext][query]`,
+                },
             },
             {
                 test: /\.(png|jpe?g|svg)$/,
                 exclude: /node_modules/,
-                type: 'asset/resource',
+                type: "asset/resource",
                 generator: {
-                    filename: 'images/[name][ext][query]'
-                }
+                    filename: "images/[name][ext][query]",
+                },
             },
             {
                 test: /\.wasm$/,
-                type: 'asset/resource',
+                type: "asset/resource",
                 generator: {
-                    filename: `${COMMIT_HASH}/binaries/[name][ext][query]`
-                }
-            }
-        ]
+                    filename: `${COMMIT_HASH}/binaries/[name][ext][query]`,
+                },
+            },
+        ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.json', '.less', '.wasm'],
+        extensions: [".tsx", ".ts", ".js", ".json", ".less", ".wasm"],
         alias: {
-            'stremio': path.resolve(__dirname, 'src'),
-            'stremio-router': path.resolve(__dirname, 'src', 'router')
-        }
+            stremio: path.resolve(__dirname, "src"),
+            "stremio-router": path.resolve(__dirname, "src", "router"),
+        },
     },
     devServer: {
-        host: '0.0.0.0',
+        host: "0.0.0.0",
         static: false,
         hot: false,
-        server: 'https',
-        liveReload: false
+        server: "https",
+        liveReload: true,
     },
     optimization: {
         minimize: true,
@@ -202,11 +199,11 @@ module.exports = (env, argv) => ({
                     output: {
                         comments: false,
                         beautify: false,
-                        wrap_iife: true
-                    }
-                }
-            })
-        ]
+                        wrap_iife: true,
+                    },
+                },
+            }),
+        ],
     },
     plugins: [
         new webpack.ProgressPlugin(),
@@ -214,90 +211,90 @@ module.exports = (env, argv) => ({
             SENTRY_DSN: null,
             ...env,
             SERVICE_WORKER_DISABLED: false,
-            DEBUG: argv.mode !== 'production',
+            DEBUG: argv.mode !== "production",
             VERSION: packageJson.version,
-            COMMIT_HASH
+            COMMIT_HASH,
         }),
         new webpack.ProvidePlugin({
-            Buffer: ['buffer', 'Buffer']
+            Buffer: ["buffer", "Buffer"],
         }),
         new CleanWebpackPlugin({
-            cleanOnceBeforeBuildPatterns: ['*']
+            cleanOnceBeforeBuildPatterns: ["*"],
         }),
-        argv.mode === 'production' &&
+        argv.mode === "production" &&
             new WorkboxPlugin.GenerateSW({
                 maximumFileSizeToCacheInBytes: 20000000,
                 clientsClaim: true,
-                skipWaiting: true
+                skipWaiting: true,
             }),
         new CopyWebpackPlugin({
             patterns: [
-                { from: 'favicons', to: 'favicons' },
-                { from: 'images', to: 'images' },
-                { from: 'screenshots/*.webp', to: './' },
-                { from: '.well-known', to: '.well-known' },
-            ]
+                { from: "favicons", to: "favicons" },
+                { from: "images", to: "images" },
+                { from: "screenshots/*.webp", to: "./" },
+                { from: ".well-known", to: ".well-known" },
+            ],
         }),
         new MiniCssExtractPlugin({
-            filename: `${COMMIT_HASH}/styles/[name].css`
+            filename: `${COMMIT_HASH}/styles/[name].css`,
         }),
         new HtmlWebPackPlugin({
-            template: './src/index.html',
+            template: "./src/index.html",
             inject: false,
-            scriptLoading: 'blocking',
-            faviconsPath: 'favicons',
-            imagesPath: 'images',
+            scriptLoading: "blocking",
+            faviconsPath: "favicons",
+            imagesPath: "images",
         }),
         new WebpackPwaManifest({
-            name: 'Stremio Web',
-            short_name: 'Stremio',
-            description: 'Freedom To Stream',
-            background_color: '#161523',
-            theme_color: '#2a2843',
-            orientation: 'any',
-            display: 'standalone',
-            display_override: ['standalone'],
-            scope: './',
-            start_url: './',
-            publicPath: './',
+            name: "Stremio Web",
+            short_name: "Stremio",
+            description: "Freedom To Stream",
+            background_color: "#161523",
+            theme_color: "#2a2843",
+            orientation: "any",
+            display: "standalone",
+            display_override: ["standalone"],
+            scope: "./",
+            start_url: "./",
+            publicPath: "./",
             icons: [
                 {
-                    src: 'images/icon.png',
-                    destination: 'icons',
+                    src: "images/icon.png",
+                    destination: "icons",
                     sizes: [196, 512],
-                    purpose: 'any'
+                    purpose: "any",
                 },
                 {
-                    src: 'images/maskable_icon.png',
-                    destination: 'maskable_icons',
+                    src: "images/maskable_icon.png",
+                    destination: "maskable_icons",
                     sizes: [196, 512],
-                    purpose: 'maskable',
-                    ios: true
+                    purpose: "maskable",
+                    ios: true,
                 },
                 {
-                    src: 'favicons/favicon.ico',
-                    destination: 'favicons',
+                    src: "favicons/favicon.ico",
+                    destination: "favicons",
                     sizes: [256],
-                }
+                },
             ],
-            screenshots : [
+            screenshots: [
                 {
-                    src: 'screenshots/board_wide.webp',
-                    sizes: '1440x900',
-                    type: 'image/webp',
-                    form_factor: 'wide',
-                    label: 'Homescreen of Stremio'
+                    src: "screenshots/board_wide.webp",
+                    sizes: "1440x900",
+                    type: "image/webp",
+                    form_factor: "wide",
+                    label: "Homescreen of Stremio",
                 },
                 {
-                    src: 'screenshots/board_narrow.webp',
-                    sizes: '414x896',
-                    type: 'image/webp',
-                    form_factor: 'narrow',
-                    label: 'Homescreen of Stremio'
-                }
+                    src: "screenshots/board_narrow.webp",
+                    sizes: "414x896",
+                    type: "image/webp",
+                    form_factor: "narrow",
+                    label: "Homescreen of Stremio",
+                },
             ],
             fingerprints: false,
-            ios: true
+            ios: true,
         }),
-    ].filter(Boolean)
+    ].filter(Boolean),
 });
