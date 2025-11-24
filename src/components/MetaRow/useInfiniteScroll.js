@@ -68,6 +68,10 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
             poster:
                 m.poster ||
                 `https://images.metahub.space/background/medium/${m.id}/img`,
+            background:
+                m.background ||
+                `https://images.metahub.space/background/medium/${m.id}/img`,
+            logo: m.logo,
             posterShape: m.posterShape || "poster",
             deepLinks: {
                 metaDetailsStream:
