@@ -120,7 +120,11 @@ const MetaItem = memo(
                     logo,
                     description: props.description, // Assuming description is passed or available
                     year: props.year || (dataset && dataset.year),
-                    trailerVideoId: trailerStream ? trailerStream.ytId : null,
+                    trailerVideoId: trailerStream
+                        ? trailerStream.ytId
+                        : props.trailer
+                        ? props.trailer
+                        : null,
                     // Add other metadata if available in props
                 });
             }, 1000);

@@ -83,6 +83,7 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
                         ? `#/detail/${itemType}/${m.id}/${m.id}`
                         : `#/detail/${itemType}/${m.id}`,
             },
+            trailer: m?.trailers?.[0]?.source,
         };
     }, []);
 
