@@ -62,7 +62,6 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
     const mapToListItem = useCallback((m, itemType) => {
         return {
             id: m.id,
-            _id: m.id,
             type: m.type || itemType,
             name: m.name,
             poster:
@@ -84,6 +83,7 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
                         : `#/detail/${itemType}/${m.id}`,
             },
             trailer: m?.trailers?.[0]?.source,
+            imdbRating: m?.imdbRating,
         };
     }, []);
 
