@@ -63,6 +63,15 @@ const MetaRow = ({
     // Smooth scroll physics
     useSmoothScroll(containerRef, true);
 
+    // Force layout recalculation when items change
+    useEffect(() => {
+        const element = containerRef.current;
+        if (!element) return;
+
+        // Force browser to recalculate layout by reading offsetHeight
+        void element.offsetHeight;
+    }, [items.length]);
+
     // Track scroll for indicator
     useEffect(() => {
         const element = containerRef.current;
@@ -165,15 +174,14 @@ const MetaRow = ({
                                 notifications={notifications}
                             />
                         ))}
-
-                    <ScrollIndicator
-                        scrollLeft={scrollPos.scrollLeft}
-                        scrollWidth={scrollPos.scrollWidth}
-                        clientWidth={scrollPos.clientWidth}
-                        totalItems={items.length}
-                    />
                 </div>
             )}
+            <ScrollIndicator
+                scrollLeft={scrollPos.scrollLeft}
+                scrollWidth={scrollPos.scrollWidth}
+                clientWidth={scrollPos.clientWidth}
+                totalItems={items.length}
+            />
         </div>
     );
 };

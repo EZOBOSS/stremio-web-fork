@@ -130,7 +130,7 @@ const useSmoothScroll = (containerRef, enabled = true) => {
         };
     }, [enabled, containerRef, startAnimation]);
 
-    // Track dimension changes with ResizeObserver
+    // Track dimension changes with ResizeObserver and MutationObserver
     useEffect(() => {
         const element = containerRef.current;
         if (!element) return;
@@ -145,11 +145,20 @@ const useSmoothScroll = (containerRef, enabled = true) => {
         // Initial update
         updateDimensions();
 
+        // Watch for element resize
         const resizeObserver = new ResizeObserver(updateDimensions);
         resizeObserver.observe(element);
 
+        // Watch for children being added/removed (items being loaded)
+        const mutationObserver = new MutationObserver(updateDimensions);
+        mutationObserver.observe(element, {
+            childList: true,
+            subtree: false,
+        });
+
         return () => {
             resizeObserver.disconnect();
+            mutationObserver.disconnect();
         };
     }, [containerRef]);
 

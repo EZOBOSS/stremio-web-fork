@@ -10,7 +10,6 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
     const [items, setItems] = useState(initialItems);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const fetchProgressRef = useRef(0);
     const seenIdsRef = useRef(new Set(initialItems.map((i) => i.id || i._id)));
     const cacheKeyRef = useRef(`catalog_${type}_${catalog}`);
 
@@ -83,7 +82,7 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
         };
     }, []);
 
-    // Main fetch function
+    // Main fetch function - loads cache in batches or fetches from API
     const loadMore = useCallback(
         async (limit = 15) => {
             if (isLoading || !hasMore || !type) return;
@@ -91,17 +90,51 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
             setIsLoading(true);
 
             try {
-                let allData = getCachedData() || [];
-                const offset = fetchProgressRef.current;
+                const cachedData = getCachedData() || [];
 
+                // Calculate how many items we've already loaded beyond initial items
+                const cacheOffset = items.length - initialItems.length;
+
+                // Try to get next batch from cache
+                const availableCacheItems = cachedData.slice(
+                    cacheOffset,
+                    cacheOffset + limit
+                );
+
+                // Filter out duplicates from cache
+                const newCachedItems = availableCacheItems.filter(
+                    (item) => !seenIdsRef.current.has(item.id || item._id)
+                );
+
+                if (newCachedItems.length > 0) {
+                    // Serve from cache
+                    console.log(
+                        `[useInfiniteScroll] Loading ${newCachedItems.length} items from cache`
+                    );
+
+                    newCachedItems.forEach((item) => {
+                        seenIdsRef.current.add(item.id || item._id);
+                    });
+
+                    setItems((prev) => [...prev, ...newCachedItems]);
+                    setIsLoading(false);
+                    return;
+                }
+
+                // Cache exhausted or empty, fetch from API
                 const baseUrl = `https://cinemeta-catalogs.strem.io/top/catalog/${type}/${catalog}`;
-                const skip = allData.length + 10;
+
+                // Skip should be the total number of items we've loaded
+                // This includes initial items + any items we've added (cache or API)
+                const skip = items.length;
                 const fetchUrl =
-                    skip > 10
+                    skip > 0
                         ? `${baseUrl}/skip=${skip}.json`
                         : `${baseUrl}.json`;
 
-                console.log(`[useInfiniteScroll] Fetching from ${fetchUrl}`);
+                console.log(
+                    `[useInfiniteScroll] Fetching from ${fetchUrl} (cache exhausted, total loaded: ${skip})`
+                );
 
                 const json = await safeFetch(fetchUrl);
 
@@ -128,14 +161,17 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
                     return;
                 }
 
-                const updatedData = [...allData, ...newItems];
+                const updatedData = [...cachedData, ...newItems];
                 setCachedData(updatedData);
 
                 setItems((prev) => [...prev, ...newItems]);
-                fetchProgressRef.current += newItems.length;
 
                 console.log(
-                    `[useInfiniteScroll] Added ${newItems.length} new items`
+                    `[useInfiniteScroll] Added ${
+                        newItems.length
+                    } new items from API (total items now: ${
+                        items.length + newItems.length
+                    })`
                 );
             } catch (err) {
                 console.error("[useInfiniteScroll] Fetch error", err);
@@ -149,6 +185,8 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
             hasMore,
             type,
             catalog,
+            items.length,
+            initialItems.length,
             getCachedData,
             setCachedData,
             safeFetch,

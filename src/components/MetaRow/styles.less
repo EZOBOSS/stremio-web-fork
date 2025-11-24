@@ -3,7 +3,9 @@
 @import (reference) "~@stremio/stremio-colors/less/stremio-colors.less";
 @import (reference) "~stremio/common/screen-sizes.less";
 
+
 .meta-row-container {
+    position: relative;
     overflow: visible;
 
     .header-container {
@@ -66,6 +68,7 @@
     }
 
     .meta-items-container {
+        position: relative;
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -116,38 +119,38 @@
                 animation: spinner-rotate 0.8s linear infinite;
             }
         }
+    }
 
-        .scroll-indicator {
-            position: absolute;
-            left: 50%;
-            bottom: 0;
-            transform: translateX(-50%);
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            pointer-events: none;
-            z-index: 10;
-            color: rgba(255, 255, 255, 0.9);
-            animation: scroll-pulse 2.5s ease-in-out infinite;
+    .scroll-indicator {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(15px);
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        pointer-events: none;
+        z-index: 10;
+        color: rgba(255, 255, 255, 0.9);
+        animation: scroll-pulse 2.5s ease-in-out infinite;
 
-            .scroll-arrow-left,
-            .scroll-arrow-right {
-                transition: opacity 0.3s ease;
-            }
+        .scroll-arrow-left,
+        .scroll-arrow-right {
+            transition: opacity 0.3s ease;
+        }
 
-            .scroll-count {
-                font-size: 14px;
-                font-weight: 600;
-                min-width: 30px;
-                text-align: center;
-                margin: 0 8px;
-            }
+        .scroll-count {
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+            margin: 0 8px;
         }
     }
 }
