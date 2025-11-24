@@ -13,11 +13,12 @@ import {
     shape,
     string,
 } from "prop-types";
-import React, { memo, useCallback, useMemo } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ICON_FOR_TYPE } from "stremio/common/CONSTANTS";
 import useBinaryState from "stremio/common/useBinaryState";
 import { default as Button } from "stremio/components/Button";
+import { useHero } from "stremio/components/Hero/HeroContext";
 import { default as Image } from "stremio/components/Image";
 import Multiselect from "stremio/components/Multiselect";
 import styles from "./styles";
@@ -41,10 +42,14 @@ const MetaItem = memo(
         onDismissClick,
         onPlayClick,
         watched,
+        trailerStreams,
         ...props
     }) => {
         const { t } = useTranslation();
         const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
+        const { setActiveItem } = useHero();
+        const hoverTimeoutRef = useRef(null);
+
         const href = useMemo(() => {
             return deepLinks
                 ? typeof deepLinks.player === "string"
@@ -100,6 +105,51 @@ const MetaItem = memo(
             () => <Icon className={styles["icon"]} name={"more-vertical"} />,
             []
         );
+
+        const handleMouseEnter = useCallback(() => {
+            hoverTimeoutRef.current = setTimeout(() => {
+                const trailerStream = Array.isArray(trailerStreams)
+                    ? trailerStreams.find((s) => s.ytId)
+                    : null;
+
+                setActiveItem({
+                    id: props.id || (dataset && dataset.id),
+                    type,
+                    title: name,
+                    background,
+                    logo,
+                    description: props.description, // Assuming description is passed or available
+                    year: props.year || (dataset && dataset.year),
+                    trailerVideoId: trailerStream ? trailerStream.ytId : null,
+                    // Add other metadata if available in props
+                });
+            }, 1000);
+        }, [
+            name,
+            background,
+            logo,
+            type,
+            props,
+            dataset,
+            trailerStreams,
+            setActiveItem,
+        ]);
+
+        const handleMouseLeave = useCallback(() => {
+            if (hoverTimeoutRef.current) {
+                clearTimeout(hoverTimeoutRef.current);
+            }
+            setActiveItem(null);
+        }, [setActiveItem]);
+
+        useEffect(() => {
+            return () => {
+                if (hoverTimeoutRef.current) {
+                    clearTimeout(hoverTimeoutRef.current);
+                }
+            };
+        }, []);
+
         return (
             <Button
                 title={name}
@@ -113,6 +163,8 @@ const MetaItem = memo(
                     { active: menuOpen }
                 )}
                 onClick={metaItemOnClick}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
             >
                 <div
                     className={classnames(styles["poster-container"], {
@@ -247,6 +299,7 @@ MetaItem.propTypes = {
     onPlayClick: func,
     onClick: func,
     watched: bool,
+    trailerStreams: array,
 };
 
 export default MetaItem;

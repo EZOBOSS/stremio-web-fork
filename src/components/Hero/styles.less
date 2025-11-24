@@ -18,6 +18,17 @@
         opacity: 0.5;
     }
 
+    .hero-player {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        transform: scale(1.35); // Zoom in slightly to avoid black bars
+    }
+
     .hero-image {
         width: 100%;
         height: 100%;
@@ -26,6 +37,7 @@
         top: 0;
         left: 0;
         z-index: 0;
+        transition: opacity 0.5s ease;
     }
 
     .hero-overlay {

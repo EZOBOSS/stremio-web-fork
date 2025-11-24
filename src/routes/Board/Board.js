@@ -19,6 +19,7 @@ const {
     MetaRow,
     Hero,
 } = require("stremio/components");
+const { HeroProvider } = require("stremio/components/Hero/HeroContext");
 const useBoard = require("./useBoard");
 const useContinueWatchingPreview = require("./useContinueWatchingPreview");
 const styles = require("./styles");
@@ -82,75 +83,80 @@ const Board = () => {
                     className={styles["board-content"]}
                     onScroll={onScroll}
                 >
-                    <Hero />
-                    {continueWatchingPreview.items.length > 0 ? (
-                        <MetaRow
-                            className={classnames(
-                                styles["board-row"],
-                                styles["continue-watching-row"],
-                                "animation-fade-in"
-                            )}
-                            title={t.string("BOARD_CONTINUE_WATCHING")}
-                            catalog={continueWatchingPreview}
-                            itemComponent={ContinueWatchingItem}
-                            notifications={notifications}
-                        />
-                    ) : null}
-                    {board.catalogs.map((catalog, index) => {
-                        switch (catalog.content?.type) {
-                            case "Ready": {
-                                return (
-                                    <MetaRow
-                                        key={index}
-                                        className={classnames(
-                                            styles["board-row"],
-                                            styles[
-                                                `board-row-${catalog.content.content[0].posterShape}`
-                                            ],
-                                            "animation-fade-in"
-                                        )}
-                                        catalog={catalog}
-                                        itemComponent={MetaItem}
-                                        enableInfiniteScroll={true}
-                                        catalogType={catalog.type}
-                                        catalogId={catalog.id}
-                                    />
-                                );
-                            }
-                            case "Err": {
-                                if (
-                                    catalog.content.content !== "EmptyContent"
-                                ) {
+                    <HeroProvider>
+                        <Hero />
+                        {continueWatchingPreview.items.length > 0 ? (
+                            <MetaRow
+                                className={classnames(
+                                    styles["board-row"],
+                                    styles["continue-watching-row"],
+                                    "animation-fade-in"
+                                )}
+                                title={t.string("BOARD_CONTINUE_WATCHING")}
+                                catalog={continueWatchingPreview}
+                                itemComponent={ContinueWatchingItem}
+                                notifications={notifications}
+                            />
+                        ) : null}
+                        {board.catalogs.map((catalog, index) => {
+                            switch (catalog.content?.type) {
+                                case "Ready": {
                                     return (
                                         <MetaRow
                                             key={index}
                                             className={classnames(
                                                 styles["board-row"],
+                                                styles[
+                                                    `board-row-${catalog.content.content[0].posterShape}`
+                                                ],
                                                 "animation-fade-in"
                                             )}
                                             catalog={catalog}
-                                            message={catalog.content.content}
+                                            itemComponent={MetaItem}
+                                            enableInfiniteScroll={true}
+                                            catalogType={catalog.type}
+                                            catalogId={catalog.id}
                                         />
                                     );
                                 }
-                                return null;
+                                case "Err": {
+                                    if (
+                                        catalog.content.content !==
+                                        "EmptyContent"
+                                    ) {
+                                        return (
+                                            <MetaRow
+                                                key={index}
+                                                className={classnames(
+                                                    styles["board-row"],
+                                                    "animation-fade-in"
+                                                )}
+                                                catalog={catalog}
+                                                message={
+                                                    catalog.content.content
+                                                }
+                                            />
+                                        );
+                                    }
+                                    return null;
+                                }
+                                default: {
+                                    return (
+                                        <MetaRow.Placeholder
+                                            key={index}
+                                            className={classnames(
+                                                styles["board-row"],
+                                                styles["board-row-poster"],
+                                                "animation-fade-in"
+                                            )}
+                                            catalog={catalog}
+                                            title={t.catalogTitle(catalog)}
+                                        />
+                                    );
+                                }
                             }
-                            default: {
-                                return (
-                                    <MetaRow.Placeholder
-                                        key={index}
-                                        className={classnames(
-                                            styles["board-row"],
-                                            styles["board-row-poster"],
-                                            "animation-fade-in"
-                                        )}
-                                        catalog={catalog}
-                                        title={t.catalogTitle(catalog)}
-                                    />
-                                );
-                            }
-                        }
-                    })}
+                        })}
+                    </HeroProvider>
                 </div>
             </MainNavBars>
             {!streamingServerWarningDismissed ? (
