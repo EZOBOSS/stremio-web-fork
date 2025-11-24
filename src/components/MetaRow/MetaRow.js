@@ -127,9 +127,11 @@ const MetaRow = ({
 
     return (
         <div className={classNames(className, styles["meta-row-container"])}>
-            <div className={classNames(styles["header-container"], {
-                "dim": isTrailerPlaying
-            })}>
+            <div
+                className={classNames(styles["header-container"], {
+                    dim: isTrailerPlaying,
+                })}
+            >
                 {catalogTitle && (
                     <div
                         className={styles["title-container"]}
