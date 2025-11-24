@@ -17,6 +17,7 @@ const {
     MainNavBars,
     MetaItem,
     MetaRow,
+    Hero,
 } = require("stremio/components");
 const useBoard = require("./useBoard");
 const useContinueWatchingPreview = require("./useContinueWatchingPreview");
@@ -81,6 +82,7 @@ const Board = () => {
                     className={styles["board-content"]}
                     onScroll={onScroll}
                 >
+                    <Hero />
                     {continueWatchingPreview.items.length > 0 ? (
                         <MetaRow
                             className={classnames(
