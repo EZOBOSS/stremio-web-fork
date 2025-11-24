@@ -1,24 +1,36 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const classnames = require('classnames');
-const { default: Icon } = require('@stremio/stremio-icons/react');
-const { default: TextInput } = require('stremio/components/TextInput');
-const SearchBarPlaceholder = require('./SearchBarPlaceholder');
-const styles = require('./styles');
+const React = require("react");
+const PropTypes = require("prop-types");
+const classnames = require("classnames");
+const { default: Icon } = require("@stremio/stremio-icons/react");
+const { default: TextInput } = require("stremio/components/TextInput");
+const SearchBarPlaceholder = require("./SearchBarPlaceholder");
+const styles = require("./styles");
 
-const SearchBar = ({ className, title, value, onChange }) => {
+const SearchBar = ({
+    className,
+    title,
+    value,
+    onChange,
+    onKeyDown,
+    onSubmit,
+}) => {
     return (
-        <label title={title} className={classnames(className, styles['search-bar-container'])}>
+        <label
+            title={title}
+            className={classnames(className, styles["search-bar-container"])}
+        >
             <TextInput
-                className={styles['search-input']}
-                type={'text'}
+                className={styles["search-input"]}
+                type={"text"}
                 placeholder={title}
                 value={value}
                 onChange={onChange}
+                onKeyDown={onKeyDown}
+                onSubmit={onSubmit}
             />
-            <Icon className={styles['icon']} name={'search'} />
+            <Icon className={styles["icon"]} name={"search"} />
         </label>
     );
 };
@@ -29,7 +41,9 @@ SearchBar.propTypes = {
     className: PropTypes.string,
     title: PropTypes.string,
     value: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    onKeyDown: PropTypes.func,
+    onSubmit: PropTypes.func,
 };
 
 module.exports = SearchBar;
