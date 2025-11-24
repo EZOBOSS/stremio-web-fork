@@ -83,10 +83,18 @@ const Hero = () => {
                     playerContainerRef.current
                 ) {
                     // Create a placeholder div inside the container
+                    playerContainerRef.current.innerHTML = "";
                     const placeholder = document.createElement("div");
+                    placeholder.style.opacity = "0";
+                    placeholder.style.transition =
+                        "opacity, transform 1s ease-in-out";
+                    placeholder.style.transform = "scale(2)";
+                    placeholder.id = "heroIframe";
                     playerContainerRef.current.appendChild(placeholder);
 
                     ytPlayerRef.current = new window.YT.Player(placeholder, {
+                        // set opacity to 0
+
                         videoId: activeItem.trailerVideoId,
                         width: "100%",
                         height: "100%",
@@ -104,6 +112,12 @@ const Hero = () => {
                             onReady: (event) => {
                                 event.target.playVideo();
                                 event.target.setVolume(15);
+
+                                // Smooth fade — allow DOM paint first
+                                requestAnimationFrame(() => {
+                                    heroIframe.style.opacity = "1";
+                                    heroIframe.style.transform = "scale(1.375)";
+                                });
                             },
                         },
                     });
@@ -149,8 +163,9 @@ const Hero = () => {
         >
             <div
                 ref={playerContainerRef}
-                className={styles["hero-player"]}
-                style={{ display: isTrailerPlaying ? "block" : "none" }}
+                className={classnames(styles["hero-player"], {
+                    [styles["visible"]]: isTrailerPlaying,
+                })}
             />
 
             <img
