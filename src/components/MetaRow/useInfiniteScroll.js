@@ -12,6 +12,7 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
     const [hasMore, setHasMore] = useState(true);
     const seenIdsRef = useRef(new Set(initialItems.map((i) => i.id || i._id)));
     const cacheKeyRef = useRef(`catalog_${type}_${catalog}`);
+    const cacheOffsetRef = useRef(0); // Track how many items loaded from cache/API
 
     // Cache helpers
     const getCachedData = useCallback(() => {
@@ -97,13 +98,10 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
             try {
                 const cachedData = getCachedData() || [];
 
-                // Calculate how many items we've already loaded beyond initial items
-                const cacheOffset = items.length - initialItems.length;
-
-                // Try to get next batch from cache
+                // Try to get next batch from cache using our tracked offset
                 const availableCacheItems = cachedData.slice(
-                    cacheOffset,
-                    cacheOffset + limit
+                    cacheOffsetRef.current,
+                    cacheOffsetRef.current + limit
                 );
 
                 // Filter out duplicates from cache
@@ -114,12 +112,16 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
                 if (newCachedItems.length > 0) {
                     // Serve from cache
                     console.log(
-                        `[useInfiniteScroll] Loading ${newCachedItems.length} items from cache`
+                        `[useInfiniteScroll] Loading ${newCachedItems.length} items from cache (offset: ${cacheOffsetRef.current}, cache size: ${cachedData.length})`
                     );
 
                     newCachedItems.forEach((item) => {
                         seenIdsRef.current.add(item.id || item._id);
                     });
+
+                    // Increment cache offset by the number of items we attempted to slice (not just new items)
+                    // This ensures we move forward in the cache even if some were duplicates
+                    cacheOffsetRef.current += limit;
 
                     setItems((prev) => [...prev, ...newCachedItems]);
                     setIsLoading(false);
@@ -169,6 +171,9 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
                 const updatedData = [...cachedData, ...newItems];
                 setCachedData(updatedData);
 
+                // Update cache offset to reflect the new cache size
+                cacheOffsetRef.current = updatedData.length;
+
                 setItems((prev) => [...prev, ...newItems]);
 
                 console.log(
@@ -176,7 +181,7 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
                         newItems.length
                     } new items from API (total items now: ${
                         items.length + newItems.length
-                    })`
+                    }, cache offset now: ${cacheOffsetRef.current})`
                 );
             } catch (err) {
                 console.error("[useInfiniteScroll] Fetch error", err);

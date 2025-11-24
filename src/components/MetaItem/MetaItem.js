@@ -47,8 +47,15 @@ const MetaItem = memo(
     }) => {
         const { t } = useTranslation();
         const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
-        const { setActiveItem } = useHero();
+        const { activeItem, setActiveItem } = useHero();
         const hoverTimeoutRef = useRef(null);
+
+        // Determine if this card should be dimmed
+        const isActiveItem =
+            activeItem &&
+            activeItem.id === (props.id || (dataset && dataset.id));
+        const shouldDim =
+            activeItem && activeItem.trailerVideoId && !isActiveItem;
 
         const href = useMemo(() => {
             return deepLinks
@@ -107,26 +114,37 @@ const MetaItem = memo(
         );
 
         const handleMouseEnter = useCallback(() => {
+            const trailerStream = Array.isArray(trailerStreams)
+                ? trailerStreams.find((s) => s.ytId)
+                : null;
+
+            const itemData = {
+                id: props.id || (dataset && dataset.id),
+                type,
+                title: name,
+                background,
+                logo,
+                description: props.description,
+                year: props.year || (dataset && dataset.year),
+            };
+
+            // Update Hero immediately without trailer
+            setActiveItem(itemData);
+
+            // Add trailer after 1 second
             hoverTimeoutRef.current = setTimeout(() => {
-                const trailerStream = Array.isArray(trailerStreams)
-                    ? trailerStreams.find((s) => s.ytId)
+                const trailerVideoId = trailerStream
+                    ? trailerStream.ytId
+                    : props.trailer
+                    ? props.trailer
                     : null;
 
-                setActiveItem({
-                    id: props.id || (dataset && dataset.id),
-                    type,
-                    title: name,
-                    background,
-                    logo,
-                    description: props.description, // Assuming description is passed or available
-                    year: props.year || (dataset && dataset.year),
-                    trailerVideoId: trailerStream
-                        ? trailerStream.ytId
-                        : props.trailer
-                        ? props.trailer
-                        : null,
-                    // Add other metadata if available in props
-                });
+                if (trailerVideoId) {
+                    setActiveItem((prev) => ({
+                        ...prev,
+                        trailerVideoId,
+                    }));
+                }
             }, 1000);
         }, [
             name,
@@ -143,7 +161,14 @@ const MetaItem = memo(
             if (hoverTimeoutRef.current) {
                 clearTimeout(hoverTimeoutRef.current);
             }
-            setActiveItem(null);
+            // Clear only the trailer to stop playback, but keep the item visible in Hero
+            setActiveItem((prev) => {
+                if (prev && prev.trailerVideoId) {
+                    const { trailerVideoId, ...rest } = prev;
+                    return rest;
+                }
+                return prev;
+            });
         }, [setActiveItem]);
 
         useEffect(() => {
@@ -164,7 +189,8 @@ const MetaItem = memo(
                     styles["meta-item-container"],
                     styles["poster-shape-poster"],
                     styles[`poster-shape-${posterShape}`],
-                    { active: menuOpen }
+                    { active: menuOpen },
+                    { dim: shouldDim }
                 )}
                 onClick={metaItemOnClick}
                 onMouseEnter={handleMouseEnter}
@@ -212,6 +238,11 @@ const MetaItem = memo(
                             renderFallback={renderPosterFallback}
                         />
                     </div>
+                    {props.imdbRating ? (
+                        <div className={styles["enhanced-rating"]}>
+                            {props.imdbRating}
+                        </div>
+                    ) : null}
                     {onPlayClick ? (
                         <div
                             title={t("CONTINUE_WATCHING")}

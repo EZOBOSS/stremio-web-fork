@@ -18,14 +18,19 @@
 .meta-item-container {
     padding: 1rem;
     overflow: visible;
-   
+    min-width: 20.7rem;
+    max-height: 15rem;
+    content-visibility: auto;
+    outline-color:transparent;
 
     &:hover, &:focus, &:global(.active), &:global(.selected) {
         outline-style: none;
-        transition: background-color 100ms ease-out;
+        background-color: transparent;
+        transform:scale(1.05);
+        transition: background-color 100ms ease-out, transform 300ms ease-out;
 
         .poster-container {
-            box-shadow: 0 0 0 0.2rem var(--primary-foreground-color);
+            box-shadow: none !important;
 
             .dismiss-icon-layer {
                 opacity: 1;
@@ -53,6 +58,12 @@
             }
         }
     }
+    &:global(.dim) {
+        opacity: 0.1;
+        transform: scale(0.75);
+        transition: opacity 400ms ease-out, transform 400ms ease-out;
+        pointer-events: none;
+    }
 
     &.poster-shape-poster {
         .poster-container {
@@ -76,7 +87,13 @@
         position: relative;
         z-index: 0;
         background-color: var(--overlay-color);
-        border-radius: var(--border-radius);
+        box-shadow:0 8px 32px rgba(0, 0, 0, 0.1),
+            0 2px 8px rgba(0, 0, 0, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+       
+        padding-top: 69% !important; 
+        border-radius: 15px !important;
 
         &:global(.poster-change-cursor) {
             .poster-image-layer {
@@ -84,6 +101,51 @@
                     cursor: zoom-in;
                 }
             }
+        }
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(0deg,
+                        rgba(0, 0, 0, 0.78) 5%,
+                        rgba(18, 13, 13, 0) 90%);
+            z-index: 0;
+            pointer-events: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
+        }
+        &:hover::after {
+            content: "";
+            position: absolute;
+            left: 0px !important;
+            right: 0px !important;
+            bottom: 0px !important;
+            height: 100% !important;
+            backdrop-filter: blur(2px) contrast(1.2);
+            transition: all 0.3s ease;
+            border-radius: inherit !important;
+        }
+        .enhanced-rating {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            opacity: 1;
+            font-size: 14px;
+            font-family: "Montserrat", sans-serif;
+            text-shadow: 1px 1px 0px rgb(0 0 0 / 41%);
+            color: rgba(255, 255, 255, 0.9);
+            background: #00000021;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(8px) saturate(160%);
+            border-radius: 0.5rem;
+            padding: 4px 7px 4px 7px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
         }
 
         .dismiss-icon-layer {
@@ -153,6 +215,10 @@
             align-items: center;
             justify-content: center;
             transition: transform 0.1s ease-out;
+            box-shadow:0 8px 32px rgba(0, 0, 0, 0.1),
+                0 2px 8px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 
             .poster-image {
                 flex: none;
@@ -160,7 +226,7 @@
                 height: 100%;
                 object-position: center;
                 object-fit: cover;
-                opacity: 0.9;
+                opacity: 0.8;
                 overflow-clip-margin: unset;
             }
 
@@ -313,12 +379,16 @@
         right: 0;
         bottom: 0;
         left: 0;
-        z-index: -3;
+        z-index: 1;
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: center;
         transition: transform 0.1s ease-out;
+
+        &:hover {
+            transform: scale(1.1);
+        }
 
         .logo-image {
             flex: none;
@@ -385,7 +455,7 @@
 
                         &:hover, &:focus {
                             outline: none;
-                            background-color: var(--overlay-color);
+                            background-color: transparent;
                         }
 
                         .multiselect-option-label {

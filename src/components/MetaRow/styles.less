@@ -7,14 +7,25 @@
 .meta-row-container {
     position: relative;
     overflow: visible;
+    display: flex !important;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    will-change: opacity, transform;
+    z-index: 11;
+    //opacity: 0;
+    //pointer-events: none;
+    //transform: translateY(-20px) scale(0.5);
+   
 
     .header-container {
+        position:absolute;
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: flex-end;
         padding: 0 1rem;
         margin-bottom: 0.25rem;
+        top: -45px;
+        
 
         .title-container {
             flex: 1;
@@ -75,12 +86,14 @@
         align-items: stretch;
         overflow-x: auto;
         overflow-y: hidden;
+        margin-left: 2rem !important;
+        height: 18rem !important;
         scrollbar-width: none;
         &::-webkit-scrollbar {
             display: none;
         }
 
-        gap: 1rem;
+        gap: 1px;
 
         .meta-item {
             flex: 0 0 auto;

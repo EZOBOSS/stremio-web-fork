@@ -7,7 +7,7 @@ import { useHeroData } from "./useHeroData";
 
 const Hero = () => {
     const t = useTranslate();
-    const { activeItem } = useHero();
+    const { activeItem, setActiveItem } = useHero();
     const heroTitles = useHeroData();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isAutoRotating, setIsAutoRotating] = useState(true);
@@ -59,13 +59,14 @@ const Hero = () => {
 
     useEffect(() => {
         if (isAutoRotating && heroTitles.length > 0) {
-            rotationIntervalRef.current = setInterval(
-                nextTitle,
-                ROTATION_INTERVAL
-            );
+            rotationIntervalRef.current = setInterval(() => {
+                // Clear activeItem when rotation kicks in
+                setActiveItem(null);
+                nextTitle();
+            }, ROTATION_INTERVAL);
         }
         return () => clearInterval(rotationIntervalRef.current);
-    }, [isAutoRotating, heroTitles.length, nextTitle]);
+    }, [isAutoRotating, heroTitles.length, nextTitle, setActiveItem]);
 
     // YouTube Player Logic
     useEffect(() => {
