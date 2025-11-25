@@ -141,75 +141,80 @@ const UpcomingList = () => {
     }
 
     return (
-        <div className={styles["upcoming-container"]}>
-            <div className={styles["upcoming-toggle-bar"]}>
-                <button
-                    className={classnames(styles["toggle-btn"], {
-                        [styles["active"]]: mode === "all",
-                    })}
-                    onClick={() => setMode("all")}
-                    aria-label="Popular"
-                >
-                    <span className={styles["btn-icon"]} aria-hidden="true">
-                        <svg
-                            viewBox="0 0 24 24"
-                            width="18"
-                            height="18"
-                            fill="currentColor"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                        </svg>
-                    </span>
-                    <span className={styles["btn-label"]}>Popular</span>
-                </button>
-                <button
-                    className={classnames(styles["toggle-btn"], {
-                        [styles["active"]]: mode === "library",
-                    })}
-                    onClick={() => setMode("library")}
-                    aria-label="My Library"
-                >
-                    <span className={styles["btn-icon"]} aria-hidden="true">
-                        <svg
-                            viewBox="0 0 24 24"
-                            width="18"
-                            height="18"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M3 6.5A1.5 1.5 0 014.5 5h3.55l1.2 1.6H19a1 1 0 011 1V18.5A1.5 1.5 0 0118.5 20h-14A1.5 1.5 0 013 18.5v-12z"
-                                fill="currentColor"
-                            />
-                            <path
-                                d="M10 9.5v5l4-2.5-4-2.5z"
-                                fill="#fff"
-                                opacity="0.95"
-                            />
-                        </svg>
-                    </span>
-                    <span className={styles["btn-label"]}>My Library</span>
-                </button>
+        <div className={styles["upcoming-wrapper"]}>
+            <div className={styles["upcoming-vertical-tab"]}>
+                <span>UPCOMING</span>
             </div>
-
-            <div className={styles["upcoming-list"]}>
-                {!upcoming.length ? (
-                    <div
-                        className={classnames(
-                            styles["upcoming-list"],
-                            styles["empty"]
-                        )}
+            <div className={styles["upcoming-container"]}>
+                <div className={styles["upcoming-toggle-bar"]}>
+                    <button
+                        className={classnames(styles["toggle-btn"], {
+                            [styles["active"]]: mode === "all",
+                        })}
+                        onClick={() => setMode("all")}
+                        aria-label="Popular"
                     >
-                        <p>No upcoming releases found.</p>
-                    </div>
-                ) : (
-                    <div className={styles["upcoming-grid"]}>
-                        {upcoming.map((m) => (
-                            <UpcomingCard key={m.id} item={m} />
-                        ))}
-                    </div>
-                )}
+                        <span className={styles["btn-icon"]} aria-hidden="true">
+                            <svg
+                                viewBox="0 0 24 24"
+                                width="18"
+                                height="18"
+                                fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                            </svg>
+                        </span>
+                        <span className={styles["btn-label"]}>Popular</span>
+                    </button>
+                    <button
+                        className={classnames(styles["toggle-btn"], {
+                            [styles["active"]]: mode === "library",
+                        })}
+                        onClick={() => setMode("library")}
+                        aria-label="My Library"
+                    >
+                        <span className={styles["btn-icon"]} aria-hidden="true">
+                            <svg
+                                viewBox="0 0 24 24"
+                                width="18"
+                                height="18"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M3 6.5A1.5 1.5 0 014.5 5h3.55l1.2 1.6H19a1 1 0 011 1V18.5A1.5 1.5 0 0118.5 20h-14A1.5 1.5 0 013 18.5v-12z"
+                                    fill="currentColor"
+                                />
+                                <path
+                                    d="M10 9.5v5l4-2.5-4-2.5z"
+                                    fill="#fff"
+                                    opacity="0.95"
+                                />
+                            </svg>
+                        </span>
+                        <span className={styles["btn-label"]}>My Library</span>
+                    </button>
+                </div>
+
+                <div className={styles["upcoming-list"]}>
+                    {!upcoming.length ? (
+                        <div
+                            className={classnames(
+                                styles["upcoming-list"],
+                                styles["empty"]
+                            )}
+                        >
+                            <p>No upcoming releases found.</p>
+                        </div>
+                    ) : (
+                        <div className={styles["upcoming-grid"]}>
+                            {upcoming.map((m) => (
+                                <UpcomingCard key={m.id} item={m} />
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
