@@ -643,8 +643,8 @@ const useUpcomingList = () => {
                 const metadataList = processMetasToList(allMetasWithVideos);
 
                 metadataList.sort((a, b) => a.releaseDate - b.releaseDate);
-                const finalList = metadataList.slice(0, limit);
-
+                //const finalList = metadataList.slice(0, limit);
+                const finalList = metadataList;
                 cacheSet(key, finalList);
                 return finalList;
             } catch (e) {

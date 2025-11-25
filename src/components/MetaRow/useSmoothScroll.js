@@ -92,7 +92,11 @@ const useSmoothScroll = (containerRef, enabled = true) => {
         if (!enabled) return;
 
         const element = containerRef.current;
-        if (!element) return;
+        if (!element) {
+            return;
+        }
+
+        console.log("[useSmoothScroll] Attaching wheel handler to:", element);
 
         const handleWheel = (e) => {
             e.preventDefault();
@@ -132,6 +136,8 @@ const useSmoothScroll = (containerRef, enabled = true) => {
 
     // Track dimension changes with ResizeObserver and MutationObserver
     useEffect(() => {
+        if (!enabled) return;
+
         const element = containerRef.current;
         if (!element) return;
 
@@ -160,10 +166,12 @@ const useSmoothScroll = (containerRef, enabled = true) => {
             resizeObserver.disconnect();
             mutationObserver.disconnect();
         };
-    }, [containerRef]);
+    }, [containerRef, enabled]);
 
     // Sync with manual scrolls (e.g., from scrollbar drag)
     useEffect(() => {
+        if (!enabled) return;
+
         const element = containerRef.current;
         if (!element) return;
 
@@ -200,7 +208,7 @@ const useSmoothScroll = (containerRef, enabled = true) => {
         return () => {
             element.removeEventListener("scroll", handleScroll);
         };
-    }, [containerRef]);
+    }, [containerRef, enabled]);
 
     // Cleanup on unmount
     useEffect(() => {

@@ -1,5 +1,6 @@
 import classnames from "classnames";
 import React from "react";
+import useSmoothScroll from "../MetaRow/useSmoothScroll";
 import styles from "./styles.less";
 import useUpcomingList from "./useUpcomingList";
 
@@ -124,6 +125,23 @@ const UpcomingCard = ({ item }) => {
 
 const UpcomingList = () => {
     const { upcoming, loading, mode, setMode } = useUpcomingList();
+    const scrollContainerRef = React.useRef(null);
+
+    // Group upcoming items by releaseText
+    const groupedByDate = React.useMemo(() => {
+        const groups = {};
+        upcoming.forEach((item) => {
+            const dateKey = item.releaseText || "Unknown";
+            if (!groups[dateKey]) {
+                groups[dateKey] = [];
+            }
+            groups[dateKey].push(item);
+        });
+        return groups;
+    }, [upcoming]);
+
+    // Smooth horizontal scrolling with physics
+    useSmoothScroll(scrollContainerRef, upcoming.length > 0);
 
     if (loading && !upcoming.length) {
         return (
@@ -131,7 +149,7 @@ const UpcomingList = () => {
                 <div
                     className={classnames(
                         styles["upcoming-list"],
-                        styles["upcoming-loading"]
+                        styles[" upcoming-loading"]
                     )}
                 >
                     <div className={styles["loading-spinner"]}></div>
@@ -208,10 +226,38 @@ const UpcomingList = () => {
                             <p>No upcoming releases found.</p>
                         </div>
                     ) : (
-                        <div className={styles["upcoming-grid"]}>
-                            {upcoming.map((m) => (
-                                <UpcomingCard key={m.id} item={m} />
-                            ))}
+                        <div
+                            ref={scrollContainerRef}
+                            className={styles["upcoming-groups-container"]}
+                        >
+                            {Object.entries(groupedByDate).map(
+                                ([dateKey, items]) => (
+                                    <div
+                                        key={dateKey}
+                                        className={
+                                            styles["upcoming-date-group"]
+                                        }
+                                    >
+                                        <h3
+                                            className={
+                                                styles["date-group-title"]
+                                            }
+                                        >
+                                            {dateKey}
+                                        </h3>
+                                        <div
+                                            className={styles["upcoming-grid"]}
+                                        >
+                                            {items.map((m) => (
+                                                <UpcomingCard
+                                                    key={m.id}
+                                                    item={m}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                )
+                            )}
                         </div>
                     )}
                 </div>
