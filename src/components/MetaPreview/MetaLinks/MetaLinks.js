@@ -4,7 +4,7 @@ const React = require("react");
 const PropTypes = require("prop-types");
 const classnames = require("classnames");
 const { Button } = require("stremio/components");
-const useTranslate = require("stremio/common/useTranslate");
+const { useTranslate } = require("stremio/common");
 const styles = require("./styles");
 
 const MetaLinks = ({ className, label, links }) => {
