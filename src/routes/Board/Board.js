@@ -18,6 +18,7 @@ const {
     MetaItem,
     MetaRow,
     Hero,
+    UpcomingList,
 } = require("stremio/components");
 const { HeroProvider } = require("stremio/components/Hero/HeroContext");
 const useBoard = require("./useBoard");
@@ -85,6 +86,7 @@ const Board = () => {
                 >
                     <HeroProvider>
                         <Hero />
+                        <UpcomingList />
                         {continueWatchingPreview.items.length > 0 ? (
                             <MetaRow
                                 className={classnames(

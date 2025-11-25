@@ -1,0 +1,405 @@
+@import (reference) '~@stremio/stremio-colors/less/stremio-colors.less';
+@import (reference) '~stremio/common/screen-sizes.less';
+
+.upcoming-container {
+    width: 100%;
+    position: relative;
+    padding: 2rem 4rem;
+    box-sizing: border-box;
+    z-index: 10;
+}
+
+.upcoming-toggle-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    
+    .toggle-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(10px);
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        &.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-icon {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-label {
+            font-weight: 500;
+        }
+    }
+}
+
+.upcoming-list {
+    width: 100%;
+    min-height: 200px;
+    
+    &.empty {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 1.2rem;
+    }
+
+    &.upcoming-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+    }
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.upcoming-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 1rem;
+}
+
+.upcoming-card {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    background: transparent;
+    border-radius: 1rem;
+    // overflow: hidden; // Removed to allow episodes container to expand outside
+    text-decoration: none;
+    color: white;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    z-index: 1;
+    width: auto;
+    height: 150px;
+
+    
+
+    &:hover {
+        
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);;
+        border-color: rgba(255, 255, 255, 0.2);
+        z-index: 10;
+        width: 400px;
+        
+       
+
+        .upcoming-background-container img {
+            transform: scale(1.05);
+        }
+
+        .upcoming-episodes-container {
+            width: 60%;
+            height: 100%;
+            opacity: 1;
+            padding: 1rem;
+        }
+    }
+    .upcoming-info {
+        width: 40%;
+    }
+
+    .upcoming-background-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+        border-radius: 1rem; // Added to maintain rounded corners since parent overflow is visible
+        transition: border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+    }
+
+    .upcoming-info {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.8));
+        position:absolute;
+        z-index: 1;
+        height: 100%;
+        width: 100%;
+       
+        border-radius: 1rem; // Added to maintain rounded corners
+        transition: border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+        
+        .upcoming-logo {
+            max-width: 150px;
+            max-height: 60px;
+            object-fit: contain;
+            margin-bottom: 0.5rem;
+        }
+
+        .upcoming-new-season {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .upcoming-release-date {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .upcoming-episode {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    }
+
+
+    // Flatten right corners on hover for children
+    &:hover .upcoming-background-container,
+    &:hover .upcoming-info {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
+
+.upcoming-episodes-container {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 0.5rem;
+    overflow: hidden;
+    width: 0%;
+    height: 100%;
+    opacity: 0;
+    padding: 0;
+    z-index: 11;
+   // background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
+    border-radius: 0 1rem 1rem 0;
+   
+    border-left: none;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+    }
+}
+
+.upcoming-episode-card {
+    flex: 1 0 20%;
+    /* subtract gap to prevent overflow */
+    box-sizing: border-box;
+    backdrop-filter: blur(10px) saturate(2);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    border: 1px solid transparent;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+        transform: scale(1.05);
+        
+    }
+
+    &.released {
+        border-color: rgba(255, 255, 255, 0.2);
+        .upcoming-episode-date {
+            opacity: 0;
+        }
+        .upcoming-episode-number, .upcoming-episode-thumbnail{
+            opacity: 1 !important;
+        }
+    }
+
+    &.upcoming-next {
+        border-color: rgba(255, 215, 0, 0.5);
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        background-color: rgba(229, 215, 135, 0.659);
+        opacity: 1 !important;
+        .upcoming-episode-number,
+        .upcoming-episode-thumbnail,
+        .upcoming-episode-date {
+            opacity: 1 !important;
+        }
+    }
+
+    &.watched {
+        opacity: 0.6;
+    }
+
+    // Overlay gradient for text readability
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+        z-index: 0;
+    }
+
+    .upcoming-episode-number {
+        font-size: 1rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        z-index: 1;
+        position: relative;
+        opacity: 0.3;
+    }
+
+    .upcoming-episode-title {
+        display: none;
+    }
+
+    .upcoming-episode-date {
+        font-size: 7px;
+        color: rgb(159, 159, 159);
+        font-weight: 600;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        z-index: 1;
+        position:absolute;
+        right: 20%;
+        opacity: 0.6;
+    }
+
+    .upcoming-episode-watched-tag {
+        position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            z-index: 10 !important;
+    }
+
+    .upcoming-episode-thumbnail {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        overflow: hidden;
+       
+        opacity: 0.7;
+        margin: 0;
+        z-index: 0;
+        background: rgba(0, 0, 0, 0.3);
+
+        &:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(191deg,
+                    rgb(0 0 0 / 4%) 5%,
+                    rgba(18, 13, 13, 0.851) 90%);
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upcoming-episode-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+    }
+}
+
+@media only screen and (max-width: @medium) {
+    .upcoming-container {
+        padding: 1rem 2rem;
+    }
+    
+    .upcoming-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media only screen and (max-width: @small) {
+    .upcoming-container {
+        padding: 1rem;
+    }
+    
+    .upcoming-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -30,6 +30,7 @@ import Slider from './Slider';
 import TextInput from './TextInput';
 import Toggle from './Toggle';
 import Transition from './Transition';
+import UpcomingList from './UpcomingList/UpcomingList';
 import Video from './Video';
 
 export {
@@ -58,6 +59,6 @@ export {
     SearchBar,
     SharePrompt, ShortcutsGroup, Slider, TextInput,
     Toggle,
-    Transition, VerticalNavBar, Video
+    Transition, UpcomingList, VerticalNavBar, Video
 };
 
