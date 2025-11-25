@@ -7,10 +7,15 @@ const CACHE_TTL = 1000 * 60 * 60 * 12; // 12 hours
 const FETCH_TIMEOUT = 5000;
 
 const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
-    const [items, setItems] = useState(initialItems);
+    // Ensure initialItems is always an array
+    const safeInitialItems = Array.isArray(initialItems) ? initialItems : [];
+
+    const [items, setItems] = useState(safeInitialItems);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const seenIdsRef = useRef(new Set(initialItems.map((i) => i.id || i._id)));
+    const seenIdsRef = useRef(
+        new Set(safeInitialItems.map((i) => i.id || i._id))
+    );
     const cacheKeyRef = useRef(`catalog_${type}_${catalog}`);
     const cacheOffsetRef = useRef(0); // Track how many items loaded from cache/API
 
@@ -93,10 +98,15 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
         };
     }, []);
 
-    // Main fetch function - loads cache in batches or fetches from API
     const loadMore = useCallback(
         async (limit = 15) => {
-            if (isLoading || !hasMore || !type) return;
+            // Only work on the board/home screen
+            const isOnBoard =
+                !window.location.hash ||
+                window.location.hash === "#/" ||
+                window.location.hash.startsWith("#/board");
+
+            if (!isOnBoard || isLoading || !hasMore || !type) return;
 
             setIsLoading(true);
 

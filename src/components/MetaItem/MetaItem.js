@@ -52,12 +52,12 @@ const MetaItem = memo(
         const { activeItem, setActiveItem } = useHero();
         const hoverTimeoutRef = useRef(null);
         const newTag = isNewTag(props.released);
-        const imdbRating = props.links.find(
+        const imdbRating = props.links?.find(
             (link) => link.category === "imdb"
         )?.name;
         const genres = props.links
-            .filter((link) => link.category === "Genres")
-            .map((link) => link.name);
+            ?.filter((link) => link.category === "Genres")
+            ?.map((link) => link.name);
 
         // Determine if this card should be dimmed
         const isActiveItem =

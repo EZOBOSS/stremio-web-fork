@@ -4,7 +4,7 @@ import useSmoothScroll from "../MetaRow/useSmoothScroll";
 import styles from "./styles.less";
 import useUpcomingList from "./useUpcomingList";
 
-const UpcomingCard = ({ item }) => {
+const UpcomingCard = React.memo(({ item }) => {
     const {
         id,
         href,
@@ -124,13 +124,14 @@ const UpcomingCard = ({ item }) => {
             </div>
         </a>
     );
-};
+});
 
 const UpcomingList = () => {
     const { upcoming, loading, mode, setMode } = useUpcomingList();
     const scrollContainerRef = React.useRef(null);
     const indicatorRef = React.useRef(null);
     const groupRefs = React.useRef({});
+    const activeGroupRef = React.useRef(null);
 
     // Group upcoming items by releaseText
     const groupedByDate = React.useMemo(() => {
@@ -149,6 +150,12 @@ const UpcomingList = () => {
     React.useEffect(() => {
         if (indicatorRef.current && Object.keys(groupedByDate).length > 0) {
             indicatorRef.current.innerText = Object.keys(groupedByDate)[0];
+            // Set initial active class
+            const firstGroup = Object.values(groupRefs.current)[0];
+            if (firstGroup) {
+                firstGroup.classList.add(styles["active"]);
+                activeGroupRef.current = firstGroup;
+            }
         }
     }, [groupedByDate]);
 
@@ -156,19 +163,39 @@ const UpcomingList = () => {
     React.useEffect(() => {
         const observerOptions = {
             root: scrollContainerRef.current,
+            // This margin creates a "trigger line" in the middle of the viewport
             rootMargin: "0px -50% 0px -50%",
             threshold: 0,
         };
 
         const observerCallback = (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    const dateKey = entry.target.dataset.dateKey;
+            const intersectingEntries = entries.filter(
+                (entry) => entry.isIntersecting
+            );
+
+            if (intersectingEntries.length === 0) return;
+
+            // Grab the last intersecting entry (most relevant)
+            const targetEntry =
+                intersectingEntries[intersectingEntries.length - 1];
+            const targetElement = targetEntry.target;
+            const dateKey = targetElement.dataset.dateKey;
+
+            // Only manipulate DOM if the target is new
+            if (activeGroupRef.current !== targetElement) {
+                window.requestAnimationFrame(() => {
                     if (dateKey && indicatorRef.current) {
                         indicatorRef.current.innerText = dateKey;
                     }
-                }
-            });
+                    if (activeGroupRef.current) {
+                        activeGroupRef.current.classList.remove(
+                            styles["active"]
+                        );
+                    }
+                    targetElement.classList.add(styles["active"]);
+                    activeGroupRef.current = targetElement;
+                });
+            }
         };
 
         const observer = new IntersectionObserver(

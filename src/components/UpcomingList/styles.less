@@ -218,6 +218,11 @@
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
         border-color: rgba(255, 255, 255, 0.12);
     }
+    
+    &.active {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+        
+    }
 }
 
 .floating-date-indicator {
@@ -226,16 +231,20 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 20;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+    backdrop-filter: blur(20px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 20px;
     padding: 0.5rem 1.5rem;
     color: white;
     font-weight: bold;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(255, 255, 255, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
     pointer-events: none;
     transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .date-group-title {

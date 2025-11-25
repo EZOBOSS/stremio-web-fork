@@ -62,14 +62,27 @@
     }
 
     .button-container {
+        transition: all 0.2s ease-in-out;
         flex: none;
         display: flex;
         align-items: center;
         justify-content: center;
         width: 3.5rem;
         height: 3.5rem;
-        border-radius: 0.75rem;
+        border-radius: 2rem;
         opacity: 0.6;
+        background-color: rgba(255, 255, 255, 0.101);
+        backdrop-filter: blur(55px) saturate(150%);
+        -webkit-backdrop-filter: blur(55px) saturate(150%);
+        box-shadow:0 8px 32px rgba(0, 0, 0, 0.1),
+            0 2px 8px rgba(0, 0, 0, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.201);
+            transform: scale(1.05);
+        }
 
         .icon {
             flex: none;

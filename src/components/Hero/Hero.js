@@ -147,7 +147,7 @@ const Hero = () => {
     }, [activeItem]);
 
     const handleMouseEnter = () => setIsAutoRotating(false);
-    const handleMouseLeave = () => !activeItem && setIsAutoRotating(true);
+    const handleMouseLeave = () => setIsAutoRotating(true);
 
     if (heroTitles.length === 0) return null;
 
