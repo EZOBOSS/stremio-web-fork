@@ -87,6 +87,9 @@ const useInfiniteScroll = (type, catalog = "top", initialItems = []) => {
             imdbRating: m?.imdbRating,
             released: m?.released,
             description: m?.description,
+            year: m?.year || m?.releaseInfo,
+            runtime: m?.runtime,
+            genres: m?.genres,
         };
     }, []);
 

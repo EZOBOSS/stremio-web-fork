@@ -82,7 +82,7 @@
             display: flex;
             align-items: center;
             gap: 1.5rem;
-            color: light-grey;
+            color: lightgrey;
             font-size: 1rem;
             margin-bottom: 2rem;
 
@@ -105,7 +105,7 @@
             button {
                 padding: 0.8rem 2rem;
                 border: none;
-                border-radius: 0.3rem;
+                border-radius: 999rem;
                 font-size: 1.1rem;
                 font-weight: bold;
                 cursor: pointer;
@@ -120,7 +120,7 @@
             }
 
             .hero-overlay-button-watch {
-                background-color: white;
+                background-color: rgba(255, 255, 255, 0.918);
                 color: black;
 
                 &:hover {
@@ -129,11 +129,18 @@
             }
 
             .hero-overlay-button {
-                background-color: rgba(109, 109, 110, 0.7);
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px) saturate(1.5);
+                border: 1px solid rgba(255, 255, 255, 0.2);
                 color: white;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2),
+                            inset 0 1px 1px rgba(255, 255, 255, 0.1);
 
                 &:hover {
-                    background-color: rgba(109, 109, 110, 0.9);
+                    background: rgba(255, 255, 255, 0.2);
+                    border-color: rgba(255, 255, 255, 0.3);
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3),
+                                inset 0 1px 1px rgba(255, 255, 255, 0.15);
                 }
             }
         }

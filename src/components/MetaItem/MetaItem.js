@@ -23,7 +23,6 @@ import { default as Image } from "stremio/components/Image";
 import Multiselect from "stremio/components/Multiselect";
 import { getDaysSinceRelease, isNewTag } from "./MetaItemHelpers";
 
-
 import styles from "./styles";
 
 const MetaItem = memo(
@@ -53,7 +52,13 @@ const MetaItem = memo(
         const { activeItem, setActiveItem } = useHero();
         const hoverTimeoutRef = useRef(null);
         const newTag = isNewTag(props.released);
-       
+        const imdbRating = props.links.find(
+            (link) => link.category === "imdb"
+        )?.name;
+        const genres = props.links
+            .filter((link) => link.category === "Genres")
+            .map((link) => link.name);
+
         // Determine if this card should be dimmed
         const isActiveItem =
             activeItem &&
@@ -129,7 +134,18 @@ const MetaItem = memo(
                 background,
                 logo,
                 description: props.description,
-                year: props.year || (dataset && dataset.year),
+                genres: props.genres || (dataset && dataset.genres) || genres,
+                year:
+                    props.year ||
+                    (dataset && dataset.year) ||
+                    props.releaseInfo,
+                rating:
+                    props.imdbRating ||
+                    imdbRating ||
+                    props.rating ||
+                    (dataset && dataset.rating),
+                duration: props.runtime || (dataset && dataset.runtime),
+                seasons: props.seasons || (dataset && dataset.seasons),
             };
 
             // Update Hero immediately without trailer
@@ -182,13 +198,11 @@ const MetaItem = memo(
                 }
             };
         }, []);
-       
-        
-      
+
         return (
             <Button
                 //remove tooltip
-                //title={name} 
+                //title={name}
                 href={href}
                 {...filterInvalidDOMProps(props)}
                 className={classnames(
@@ -245,16 +259,14 @@ const MetaItem = memo(
                             renderFallback={renderPosterFallback}
                         />
                     </div>
-                    {props.imdbRating ? (
+                    {props.imdbRating || imdbRating ? (
                         <div className={styles["enhanced-rating"]}>
-                            {props.imdbRating}
+                            {props.imdbRating || imdbRating}
                         </div>
                     ) : null}
                     {props.released ? (
                         <div className={styles["enhanced-release-date"]}>
-                            {getDaysSinceRelease(
-                                props.released
-                            )}
+                            {getDaysSinceRelease(props.released)}
                         </div>
                     ) : null}
                     {newTag ? (

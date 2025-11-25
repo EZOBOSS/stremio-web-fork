@@ -187,11 +187,14 @@ const Hero = () => {
                 <div className={styles["hero-overlay-info"]}>
                     <p>{currentTitle.year}</p>
                     <p>{currentTitle.duration}</p>
+                    {currentTitle.genres && (
+                        <p>{currentTitle.genres.join(", ")}</p>
+                    )}
                     <p>{currentTitle.seasons}</p>
                     {currentTitle.rating && currentTitle.rating !== "na" && (
                         <p className={styles["rating-item"]}>
                             <span className={styles["rating-text"]}>
-                                ⭐ {currentTitle.rating}/10
+                                ⭐ {currentTitle.rating}
                             </span>
                         </p>
                     )}
