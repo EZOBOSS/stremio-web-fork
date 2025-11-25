@@ -21,15 +21,18 @@ const UpcomingCard = ({ item }) => {
         year,
         runtime,
         genres,
+        releaseDate,
     } = item;
 
     const upcomingSeasonNumber = isNewSeason ? videos[0]?.season : 0;
+    const isFuture = new Date(releaseDate) > new Date();
 
     return (
         <a
             tabIndex="0"
             className={classnames(styles["upcoming-card"], {
                 [styles["new-season"]]: isNewSeason,
+                [styles["future"]]: isFuture,
             })}
             href={href}
             data-trailer-url={trailer || ""}
@@ -126,6 +129,8 @@ const UpcomingCard = ({ item }) => {
 const UpcomingList = () => {
     const { upcoming, loading, mode, setMode } = useUpcomingList();
     const scrollContainerRef = React.useRef(null);
+    const indicatorRef = React.useRef(null);
+    const groupRefs = React.useRef({});
 
     // Group upcoming items by releaseText
     const groupedByDate = React.useMemo(() => {
@@ -139,6 +144,44 @@ const UpcomingList = () => {
         });
         return groups;
     }, [upcoming]);
+
+    // Set initial indicator text
+    React.useEffect(() => {
+        if (indicatorRef.current && Object.keys(groupedByDate).length > 0) {
+            indicatorRef.current.innerText = Object.keys(groupedByDate)[0];
+        }
+    }, [groupedByDate]);
+
+    // Intersection Observer for updating active group
+    React.useEffect(() => {
+        const observerOptions = {
+            root: scrollContainerRef.current,
+            rootMargin: "0px -50% 0px -50%",
+            threshold: 0,
+        };
+
+        const observerCallback = (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const dateKey = entry.target.dataset.dateKey;
+                    if (dateKey && indicatorRef.current) {
+                        indicatorRef.current.innerText = dateKey;
+                    }
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(
+            observerCallback,
+            observerOptions
+        );
+
+        Object.values(groupRefs.current).forEach((el) => {
+            if (el) observer.observe(el);
+        });
+
+        return () => observer.disconnect();
+    }, [groupedByDate]);
 
     // Smooth horizontal scrolling with physics
     useSmoothScroll(scrollContainerRef, upcoming.length > 0);
@@ -164,6 +207,12 @@ const UpcomingList = () => {
                 <span>UPCOMING</span>
             </div>
             <div className={styles["upcoming-container"]}>
+                {Object.keys(groupedByDate).length > 0 && (
+                    <div
+                        ref={indicatorRef}
+                        className={styles["floating-date-indicator"]}
+                    />
+                )}
                 <div className={styles["upcoming-toggle-bar"]}>
                     <button
                         className={classnames(styles["toggle-btn"], {
@@ -234,6 +283,10 @@ const UpcomingList = () => {
                                 ([dateKey, items]) => (
                                     <div
                                         key={dateKey}
+                                        data-date-key={dateKey}
+                                        ref={(el) =>
+                                            (groupRefs.current[dateKey] = el)
+                                        }
                                         className={
                                             styles["upcoming-date-group"]
                                         }
