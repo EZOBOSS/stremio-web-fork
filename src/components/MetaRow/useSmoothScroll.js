@@ -96,8 +96,6 @@ const useSmoothScroll = (containerRef, enabled = true) => {
             return;
         }
 
-        console.log("[useSmoothScroll] Attaching wheel handler to:", element);
-
         const handleWheel = (e) => {
             e.preventDefault();
 
