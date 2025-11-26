@@ -323,8 +323,7 @@ const Player = ({ urlParams, queryParams }) => {
         setError(null);
         video.unload();
 
-        // if (player.stream?.type === 'Ready' && streamingServer.settings?.type !== 'Loading') {
-        if (player.selected && player.stream?.type === 'Ready' && streamingServer.settings?.type !== 'Loading') {
+        if (player.stream?.type === 'Ready' && streamingServer.settings?.type !== 'Loading') {
             video.load({
                 stream: {
                     ...player.stream.content,
