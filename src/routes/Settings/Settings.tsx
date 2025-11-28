@@ -4,7 +4,7 @@ import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from '
 import classnames from 'classnames';
 import throttle from 'lodash.throttle';
 import { useRouteFocused } from 'stremio-router';
-import { useProfile, useStreamingServer, withCoreSuspender } from 'stremio/common';
+import { usePlatform, useProfile, useStreamingServer, withCoreSuspender } from 'stremio/common';
 import { MainNavBars } from 'stremio/components';
 import { SECTIONS } from './constants';
 import Menu from './Menu';
@@ -18,6 +18,7 @@ import styles from './Settings.less';
 const Settings = () => {
     const { routeFocused } = useRouteFocused();
     const profile = useProfile();
+    const platform = usePlatform();
     const streamingServer = useStreamingServer();
 
     const sectionsContainerRef = useRef<HTMLDivElement>(null);
@@ -94,7 +95,9 @@ const Settings = () => {
                         profile={profile}
                         streamingServer={streamingServer}
                     />
-                    <Shortcuts ref={shortcutsSectionRef} />
+                    {
+                        !platform.isMobile && <Shortcuts ref={shortcutsSectionRef} />
+                    }
                     <Info streamingServer={streamingServer} />
                 </div>
             </div>
