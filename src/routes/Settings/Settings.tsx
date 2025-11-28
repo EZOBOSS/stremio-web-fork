@@ -42,7 +42,7 @@ const Settings = () => {
             setSelectedSectionId(sections[sections.length - 1].id);
         } else {
             for (let i = sections.length - 1; i >= 0; i--) {
-                if (sections[i].ref.current!.offsetTop - container!.offsetTop <= container!.scrollTop) {
+                if (sections[i].ref.current && sections[i].ref.current!.offsetTop - container!.offsetTop <= container!.scrollTop) {
                     setSelectedSectionId(sections[i].id);
                     break;
                 }
